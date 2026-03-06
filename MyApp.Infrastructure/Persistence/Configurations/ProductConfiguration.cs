@@ -15,6 +15,9 @@ namespace MyApp.Infrastructure.Persistence.Configurations
 
             builder.HasKey(p => p.Id);
 
+            builder.Property(p => p.Price)
+                .HasPrecision(6, 2);
+
         }
     }
 }
