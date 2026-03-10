@@ -19,6 +19,9 @@ namespace MyApp.Infrastructure.Persistence.Configurations
             builder.HasOne(op => op.Product)
                 .WithMany(p => p.OrderProducts)
                 .HasForeignKey(op => op.ProductId);
+
+            builder.Property(op => op.Quantity)
+                .IsRequired();
         }
     }
 }

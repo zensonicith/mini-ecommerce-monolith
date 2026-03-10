@@ -10,7 +10,6 @@ namespace MyApp.Domain.Entities
         public int CustomerId { get; set; }
         public Customer? Customer { get; set; }
         public ICollection<OrderProducts> OrderProducts { get; } = [];
-        public int Quantity { get; set; }
         public DateTime OrderDate { get; set; }
     }
 }

@@ -41,13 +41,11 @@ namespace MyApp.Infrastructure.Persistence.Seed
                 new Order
                 {
                     CustomerId = customers[0].Id,
-                    Quantity = 2,
                     OrderDate = new DateTime(2026,1,1)
                 },
                 new Order
                 {
                     CustomerId = customers[1].Id,
-                    Quantity = 1,
                     OrderDate = new DateTime(2026,1,2)
                 }
             };
@@ -59,9 +57,9 @@ namespace MyApp.Infrastructure.Persistence.Seed
             // OrderProducts (many-to-many)
             var orderProducts = new List<OrderProducts>
             {
-                new OrderProducts { OrderId = orders[0].Id, ProductId = products[0].Id },
-                new OrderProducts { OrderId = orders[0].Id, ProductId = products[1].Id },
-                new OrderProducts { OrderId = orders[1].Id, ProductId = products[2].Id }
+                new OrderProducts { OrderId = orders[0].Id, ProductId = products[0].Id , Quantity = 2},
+                new OrderProducts { OrderId = orders[0].Id, ProductId = products[1].Id , Quantity = 1},
+                new OrderProducts { OrderId = orders[1].Id, ProductId = products[2].Id , Quantity = 3}
             };
 
             await context.OrderProducts.AddRangeAsync(orderProducts);

@@ -14,7 +14,7 @@ namespace MyApp.Infrastructure.Persistence.Configurations
             builder.ToTable("Customers");
 
             builder.HasKey(c => c.Id);
-
+            
         }
     }
 }
