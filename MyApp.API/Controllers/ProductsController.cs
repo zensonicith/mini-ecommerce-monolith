@@ -20,13 +20,14 @@ namespace MyApp.API.Controllers
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-            if (product == null)
+
+            if (product is null)
             {
-                return NotFound();
+                return NotFound($"Product {id} is not found!");
             }
+
             return Ok(product);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)

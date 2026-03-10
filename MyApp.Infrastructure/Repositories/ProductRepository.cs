@@ -21,7 +21,9 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<Product?> GetByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task AddAsync(Product product)
         {

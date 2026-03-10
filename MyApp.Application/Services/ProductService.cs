@@ -1,4 +1,5 @@
-﻿using MyApp.Application.Interfaces;
+﻿using MyApp.Application.DTOs;
+using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 
 namespace MyApp.Application.Services
@@ -10,13 +11,17 @@ namespace MyApp.Application.Services
         {
             _productRepository = productRepository;
         }
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<ProductDto>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync();
+            throw new NotImplementedException();
         }
-        public async Task<Product?> GetProductByIdAsync(int id)
+        public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            var product = await _productRepository.GetByIdAsync(id);
+
+            var response = (ProductDto)product;
+
+            return response;
         }
         public async Task AddProductAsync(Product product)
         {
