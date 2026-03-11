@@ -7,6 +7,7 @@ namespace MyApp.Application.DTOs
 {
     public class ProductDto
     {
+        public int Id { get; set; }
         public string? ProductName { get; set; }
         public int Unit { get; set; }
         public decimal Price { get; set; }
@@ -17,6 +18,7 @@ namespace MyApp.Application.DTOs
 
             return new ProductDto
             {
+                Id = product.Id,
                 ProductName = product.ProductName,
                 Unit = product.Unit,
                 Price = product.Price
