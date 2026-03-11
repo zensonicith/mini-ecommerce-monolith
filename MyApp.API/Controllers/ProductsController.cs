@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.DTOs;
@@ -40,6 +40,7 @@ namespace MyApp.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
             var result = await _productService.AddProductAsync(request);

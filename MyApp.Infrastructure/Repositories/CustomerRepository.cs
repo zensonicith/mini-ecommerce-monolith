@@ -15,7 +15,9 @@ public class CustomerRepository : ICustomerRepository
     }
     public async Task<Customer> GetByUserNameAsync(string userName)
     {
-        var user = await _dbContext.Customers.SingleOrDefaultAsync(customer => customer.UserName.Equals(userName));
+        var user = await _dbContext.Customers
+            .Include(c => c.Role)
+            .SingleOrDefaultAsync(customer => customer.UserName.Equals(userName));
         return user;
     }
 }
