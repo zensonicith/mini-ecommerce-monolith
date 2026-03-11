@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddOpenApiDocument();
 
 var app = builder.Build();
 
@@ -32,7 +33,8 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.UseHttpsRedirection();
