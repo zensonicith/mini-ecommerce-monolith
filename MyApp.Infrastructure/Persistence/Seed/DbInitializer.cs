@@ -15,8 +15,8 @@ namespace MyApp.Infrastructure.Persistence.Seed
             // Customers
             var customers = new List<Customer>
             {
-                new Customer { Name = "John Doe", Address = "123 Street", City = "New York" },
-                new Customer { Name = "Jane Smith", Address = "456 Avenue", City = "Los Angeles" }
+                new Customer { Name = "John Doe", Address = "123 Street", City = "New York", Password = "123123", UserName = "johndoe"},
+                new Customer { Name = "Jane Smith", Address = "456 Avenue", City = "Los Angeles", Password = "123123", UserName = "janesmith"}
             };
 
             await context.Customers.AddRangeAsync(customers);
