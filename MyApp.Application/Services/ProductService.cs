@@ -13,7 +13,9 @@ namespace MyApp.Application.Services
         }
         public async Task<List<ProductDto>> GetAllProductsAsync()
         {
-            throw new NotImplementedException();
+            var products = await _productRepository.GetAllAsync();
+            var response = products.Select(p => (ProductDto)p).ToList();
+            return response;
         }
         public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
