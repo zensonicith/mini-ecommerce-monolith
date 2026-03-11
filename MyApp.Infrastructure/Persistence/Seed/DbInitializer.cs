@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyApp.Domain.Entities;
+using MyApp.Domain.Enum;
 
 namespace MyApp.Infrastructure.Persistence.Seed
 {
@@ -11,12 +12,20 @@ namespace MyApp.Infrastructure.Persistence.Seed
 
             if (context.Customers.Any())
                 return;
-
+            // Role
+            var roles = new List<Role>
+            {
+                new Role { RoleType = ERole.ADMIN, Description = "Role for admin" },
+                new Role { RoleType = ERole.USER, Description = "Role for uesr" }
+            };
+            
+            await context.Roles.AddRangeAsync(roles);
+            await context.SaveChangesAsync();
             // Customers
             var customers = new List<Customer>
             {
-                new Customer { Name = "John Doe", Address = "123 Street", City = "New York", Password = "123123", UserName = "johndoe"},
-                new Customer { Name = "Jane Smith", Address = "456 Avenue", City = "Los Angeles", Password = "123123", UserName = "janesmith"}
+                new Customer { Name = "John Doe", Address = "123 Street", City = "New York", Password = "123123", UserName = "johndoe", Role = roles[0]},
+                new Customer { Name = "Jane Smith", Address = "456 Avenue", City = "Los Angeles", Password = "123123", UserName = "janesmith", Role = roles[1]}
             };
 
             await context.Customers.AddRangeAsync(customers);
