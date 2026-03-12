@@ -1,4 +1,5 @@
 ﻿using MyApp.Domain.Entities;
+using MyApp.Domain.Enum;
 
 namespace MyApp.Application.DTOs;
 
@@ -9,6 +10,7 @@ public class CustomerDto
     public string? Address { get; set; }
     public string UserName { get; set; }
     public string? City { get; set; }
+    public ERole Role { get; set; }
     
     public static explicit operator CustomerDto(Customer customer)
     {
@@ -20,7 +22,8 @@ public class CustomerDto
             Address = customer.Address,
             City = customer.City,
             Name = customer.Name,
-            Id = customer.Id
+            Id = customer.Id,
+            Role = customer.Role.RoleType
         };
     }
 }

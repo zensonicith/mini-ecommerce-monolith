@@ -1,8 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MyApp.Infrastructure.Persistence;
 using MyApp.Infrastructure.Persistence.Seed;
 using MyApp.Infrastructure;
 using MyApp.Application;
+using MyApp.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +37,26 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddOpenApiDocument();
 
+// === JWT Configuration ===
+builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("Jwt"));
+var jwtSetting = builder.Configuration.GetSection("Jwt").Get<JwtSetting>()!;
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSetting.Issuer,
+            ValidAudience = jwtSetting.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
 var app = builder.Build();
 
 // === Initialize data ===
@@ -48,10 +72,14 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi();
 }
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
 app.UseCors();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
