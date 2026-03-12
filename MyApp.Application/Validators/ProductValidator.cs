@@ -3,7 +3,7 @@ using MyApp.Application.DTOs;
 
 namespace MyApp.Application.Validators
 {
-    internal class ProductValidator : AbstractValidator<ProductDto>
+    internal class ProductValidator : AbstractValidator<ProductResponseDto>
     {
         public ProductValidator() { 
             RuleFor(p => p.ProductName)

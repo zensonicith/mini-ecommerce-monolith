@@ -1,12 +1,14 @@
-﻿namespace MyApp.Domain.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MyApp.Application.DTOs
 {
-    public class Product
+    public class ProductRequestDto
     {
-        public int Id { get; set; }
         public string ProductName { get; set; }
         public string? Description { get; set; }
         public int Unit { get; set; }
         public decimal Price { get; set; }
-        public ICollection<OrderProducts> OrderProducts { get; } = [];
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 
@@ -25,7 +27,7 @@ namespace MyApp.API.Controllers
 
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<IActionResult> GetProductById([FromRoute] int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
@@ -38,10 +40,32 @@ namespace MyApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
-            await _productService.AddProductAsync(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+            var result = await _productService.AddProductAsync(request);
+            return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, request);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductRequestDto request)
+        {
+            var success = await _productService.UpdateProductAsync(id, request);
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
+        {
+            var success = await _productService.DeleteProductAsync(id);
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
         }
     }
 }
