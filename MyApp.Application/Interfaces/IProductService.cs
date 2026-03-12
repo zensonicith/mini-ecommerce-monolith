@@ -5,10 +5,10 @@ namespace MyApp.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<List<ProductDto>> GetAllProductsAsync();
-        Task<ProductDto> GetProductByIdAsync(int id);
-        Task AddProductAsync(Product product);
-        Task UpdateProductAsync(Product product);
-        Task DeleteProductAsync(int id);
+        Task<List<ProductResponseDto>> GetAllProductsAsync();
+        Task<ProductResponseDto> GetProductByIdAsync(int id);
+        Task<ProductResponseDto> AddProductAsync(ProductRequestDto request);
+        Task<bool> UpdateProductAsync(int id, ProductRequestDto request);
+        Task<bool> DeleteProductAsync(int id);
     }
 }
