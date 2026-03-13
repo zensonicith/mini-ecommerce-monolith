@@ -9,7 +9,7 @@ namespace MyApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -41,20 +41,20 @@ namespace MyApp.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
+        //[Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> CreateProduct([FromForm] ProductRequestDto request, [FromForm] IFormFile? image)
         {
-            var result = await _productService.AddProductAsync(request);
+            var result = await _productService.AddProductAsync(request,image);
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, request);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductRequestDto request)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromForm] ProductRequestDto request, [FromForm] IFormFile? newImage)
         {
-            var success = await _productService.UpdateProductAsync(id, request);
+            var success = await _productService.UpdateProductAsync(id, request, newImage);
 
             if (!success)
-                return NotFound();
+                return BadRequest();
 
             return NoContent();
         }
