@@ -1,4 +1,5 @@
-﻿using MyApp.Application.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 
@@ -7,10 +8,12 @@ namespace MyApp.Application.Services
     internal class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IFileStorageService _fileStorage;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IFileStorageService fileStorage)
         {
             _productRepository = productRepository;
+            _fileStorage = fileStorage;
         }
 
         public async Task<List<ProductResponseDto>> GetAllProductsAsync()
@@ -24,11 +27,12 @@ namespace MyApp.Application.Services
         {
             var product = await _productRepository.GetByIdAsync(id);
 
-            var response = (ProductResponseDto)product;
+            var response = (ProductResponseDto)product!;
             return response;
         }
 
-        public async Task<ProductResponseDto> AddProductAsync(ProductRequestDto request)
+        public async Task<ProductResponseDto> AddProductAsync(ProductRequestDto request, IFormFile? image,
+            CancellationToken ct = default)
         {
             var product = new Product
             {
@@ -36,8 +40,12 @@ namespace MyApp.Application.Services
                 Description = request.Description,
                 Unit = request.Unit,
                 Price = request.Price,
-                ImageUrl = request.ImageUrl
             };
+
+            if (image != null)
+            {
+                product.ImageUrl = await _fileStorage.UploadImageAsync(image, "product", ct);
+            }
 
             await _productRepository.AddAsync(product);
 
@@ -45,7 +53,7 @@ namespace MyApp.Application.Services
             return response;
         }
 
-        public async Task<bool> UpdateProductAsync(int id, ProductRequestDto request)
+        public async Task<bool> UpdateProductAsync(int id, ProductRequestDto request, IFormFile? newImage = null, CancellationToken ct = default)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
@@ -55,8 +63,16 @@ namespace MyApp.Application.Services
             product.Description = request.Description;
             product.Unit = request.Unit;
             product.Price = request.Price;
-            product.ImageUrl = request.ImageUrl;
 
+            if (newImage != null)
+            {
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    await _fileStorage.DeleteImageAsync(product.ImageUrl, ct);
+                }
+                product.ImageUrl = await _fileStorage.UploadImageAsync(newImage, "product", ct);
+            }
+            
             await _productRepository.UpdateAsync(product);
             return true;
         }

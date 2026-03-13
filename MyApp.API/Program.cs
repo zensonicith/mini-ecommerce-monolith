@@ -6,6 +6,7 @@ using MyApp.Infrastructure.Persistence;
 using MyApp.Infrastructure.Persistence.Seed;
 using MyApp.Infrastructure;
 using MyApp.Application;
+using MyApp.Infrastructure.Options;
 using MyApp.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +26,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins("http://localhost:4200")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -43,7 +44,6 @@ var jwtSetting = builder.Configuration.GetSection("Jwt").Get<JwtSetting>()!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -56,6 +56,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
+
+// === Blob storage Configuration ===
+builder.Services.Configure<BlobStorageOptions>(
+    builder.Configuration.GetSection("AzureBlobStorage"));
 
 var app = builder.Build();
 
@@ -72,6 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi();
 }
+
 app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();

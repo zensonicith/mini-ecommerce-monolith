@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using MyApp.Application.Interfaces;
 using MyApp.Application.Services;
+using MyApp.Infrastructure.Options;
 using MyApp.Infrastructure.Repositories;
+using MyApp.Infrastructure.Services;
 
 namespace MyApp.Infrastructure
 {
@@ -15,6 +18,8 @@ namespace MyApp.Infrastructure
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IFileStorageService, AzureBlobStorageService>();
+            
             return services;
         }
     }
