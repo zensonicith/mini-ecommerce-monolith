@@ -31,7 +31,7 @@ namespace MyApp.Application.Services
             return response;
         }
 
-        public async Task<ProductResponseDto> AddProductAsync(ProductRequestDto request, IFormFile? image,
+        public async Task<ProductResponseDto> AddProductAsync(CreateProductRequestDto request,
             CancellationToken ct = default)
         {
             var product = new Product
@@ -40,20 +40,18 @@ namespace MyApp.Application.Services
                 Description = request.Description,
                 Unit = request.Unit,
                 Price = request.Price,
+                ImageUrl = (request.Image != null) 
+                    ? await _fileStorage.UploadImageAsync(request.Image, "product", ct) 
+                    : null
             };
-
-            if (image != null)
-            {
-                product.ImageUrl = await _fileStorage.UploadImageAsync(image, "product", ct);
-            }
-
+            
             await _productRepository.AddAsync(product);
 
             var response = (ProductResponseDto)product;
             return response;
         }
 
-        public async Task<bool> UpdateProductAsync(int id, ProductRequestDto request, IFormFile? newImage = null, CancellationToken ct = default)
+        public async Task<bool> UpdateProductAsync(int id, UpdateProductRequestDto request, CancellationToken ct = default)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
@@ -64,13 +62,13 @@ namespace MyApp.Application.Services
             product.Unit = request.Unit;
             product.Price = request.Price;
 
-            if (newImage != null)
+            if (request.NewImage != null)
             {
                 if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
                     await _fileStorage.DeleteImageAsync(product.ImageUrl, ct);
                 }
-                product.ImageUrl = await _fileStorage.UploadImageAsync(newImage, "product", ct);
+                product.ImageUrl = await _fileStorage.UploadImageAsync(request.NewImage, "product", ct);
             }
             
             await _productRepository.UpdateAsync(product);
