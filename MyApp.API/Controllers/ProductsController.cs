@@ -42,16 +42,16 @@ namespace MyApp.API.Controllers
 
         [HttpPost]
         //[Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> CreateProduct([FromForm] ProductRequestDto request, [FromForm] IFormFile? image)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequestDto request)
         {
-            var result = await _productService.AddProductAsync(request,image);
-            return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, request);
+            var result = await _productService.AddProductAsync(request);
+            return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, result);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromForm] ProductRequestDto request, [FromForm] IFormFile? newImage)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromForm] UpdateProductRequestDto request)
         {
-            var success = await _productService.UpdateProductAsync(id, request, newImage);
+            var success = await _productService.UpdateProductAsync(id, request);
 
             if (!success)
                 return BadRequest();
