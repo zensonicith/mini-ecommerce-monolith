@@ -20,7 +20,7 @@ namespace MyApp.Application.Services
             return response;
         }
 
-        public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
+        public async Task<ProductResponseDto> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
@@ -35,7 +35,8 @@ namespace MyApp.Application.Services
                 ProductName = request.ProductName,
                 Description = request.Description,
                 Unit = request.Unit,
-                Price = request.Price
+                Price = request.Price,
+                ImageUrl = request.ImageUrl
             };
 
             await _productRepository.AddAsync(product);
@@ -54,6 +55,7 @@ namespace MyApp.Application.Services
             product.Description = request.Description;
             product.Unit = request.Unit;
             product.Price = request.Price;
+            product.ImageUrl = request.ImageUrl;
 
             await _productRepository.UpdateAsync(product);
             return true;
