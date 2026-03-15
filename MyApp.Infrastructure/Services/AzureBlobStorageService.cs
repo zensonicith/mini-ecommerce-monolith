@@ -1,47 +1,53 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
 
 namespace MyApp.Infrastructure.Services;
 
 public class AzureBlobStorageService : IFileStorageService
 {
-   private readonly BlobServiceClient _blobServiceClient;
+    private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
 
     public AzureBlobStorageService(IConfiguration configuration)
     {
         var connectionString = configuration.GetValue<string>("AzureBlobStorage:ConnectionString")
-            ?? throw new InvalidOperationException("AzureBlobStorage:ConnectionString not found");
+                               ?? throw new InvalidOperationException("AzureBlobStorage:ConnectionString not found");
 
         _containerName = configuration.GetValue<string>("AzureBlobStorage:ContainerName")
-            ?? "product-images";
+                         ?? "product-images";
 
         _blobServiceClient = new BlobServiceClient(connectionString);
     }
 
-    public async Task<string?> UploadImageAsync(IFormFile? file, string prefix = "product", CancellationToken ct = default)
+    public async Task<UploadImageResponseDto?> UploadImageAsync(UploadImageRequestDto requestDto, string prefix = "product",
+        CancellationToken ct = default)
     {
-        if (file == null || file.Length == 0)
+        if (requestDto.Image == null || requestDto.Image.Length == 0)
             return null;
 
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob, cancellationToken: ct);
 
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var extension = Path.GetExtension(requestDto.Image.FileName).ToLowerInvariant();
         var blobName = $"{prefix}-{Guid.NewGuid():N}{extension}";
 
         var blobClient = containerClient.GetBlobClient(blobName);
 
-        await using var stream = file.OpenReadStream();
+        await using var stream = requestDto.Image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobUploadOptions
         {
-            HttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType }
+            HttpHeaders = new BlobHttpHeaders { ContentType = requestDto.Image.ContentType }
         }, ct);
 
-        return blobClient.Uri.ToString();  // URL đầy đủ
+        var imageUrl = blobClient.Uri.ToString(); // URL đầy đủ
+
+        return new UploadImageResponseDto()
+        {
+            ImageUrl = imageUrl
+        };
     }
 
     public async Task DeleteImageAsync(string? imageUrl, CancellationToken ct = default)

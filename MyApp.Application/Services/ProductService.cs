@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using MyApp.Application.DTOs;
+﻿using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 
@@ -40,18 +39,17 @@ namespace MyApp.Application.Services
                 Description = request.Description,
                 Unit = request.Unit,
                 Price = request.Price,
-                ImageUrl = (request.Image != null) 
-                    ? await _fileStorage.UploadImageAsync(request.Image, "product", ct) 
-                    : null
+                ImageUrl = request.ImageUrl ?? null
             };
-            
+
             await _productRepository.AddAsync(product);
 
             var response = (ProductResponseDto)product;
             return response;
         }
 
-        public async Task<bool> UpdateProductAsync(int id, UpdateProductRequestDto request, CancellationToken ct = default)
+        public async Task<bool> UpdateProductAsync(int id, UpdateProductRequestDto request,
+            CancellationToken ct = default)
         {
             var product = await _productRepository.GetByIdAsync(id);
 
@@ -62,15 +60,16 @@ namespace MyApp.Application.Services
             product.Unit = request.Unit;
             product.Price = request.Price;
 
-            if (request.NewImage != null)
+            if (request.NewImageUrl != null)
             {
                 if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
                     await _fileStorage.DeleteImageAsync(product.ImageUrl, ct);
                 }
-                product.ImageUrl = await _fileStorage.UploadImageAsync(request.NewImage, "product", ct);
+
+                product.ImageUrl = request.NewImageUrl;
             }
-            
+
             await _productRepository.UpdateAsync(product);
             return true;
         }

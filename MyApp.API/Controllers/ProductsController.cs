@@ -1,9 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
-using MyApp.Domain.Entities;
 
 namespace MyApp.API.Controllers
 {
@@ -32,7 +29,7 @@ namespace MyApp.API.Controllers
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product is null)
+            if (product == null)
             {
                 return NotFound($"Product {id} is not found!");
             }

@@ -11,6 +11,6 @@ namespace MyApp.Application.DTOs
         public string? Description { get; set; }
         public int Unit { get; set; }
         public decimal Price { get; set; }
-        public IFormFile? NewImage { get; set; }
+        public string? NewImageUrl { get; set; }
     }
 }
