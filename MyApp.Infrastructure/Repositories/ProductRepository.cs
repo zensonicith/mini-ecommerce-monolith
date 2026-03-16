@@ -16,7 +16,7 @@ namespace MyApp.Infrastructure.Repositories
 
         public async Task<List<Product>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products.AsNoTracking().ToListAsync();
         }
 
         public async Task<Product?> GetByIdAsync(int id)
@@ -25,11 +25,13 @@ namespace MyApp.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
         public async Task AddAsync(Product product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
+
         public async Task UpdateAsync(Product product)
         {
             _context.Products.Update(product);

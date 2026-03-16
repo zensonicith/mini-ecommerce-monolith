@@ -1,9 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
-using MyApp.Domain.Entities;
 
 namespace MyApp.API.Controllers
 {
@@ -32,7 +29,7 @@ namespace MyApp.API.Controllers
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product is null)
+            if (product == null)
             {
                 return NotFound($"Product {id} is not found!");
             }
@@ -42,14 +39,14 @@ namespace MyApp.API.Controllers
 
         [HttpPost]
         //[Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequestDto request)
+        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequestDto request)
         {
             var result = await _productService.AddProductAsync(request);
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, result);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromForm] UpdateProductRequestDto request)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto request)
         {
             var success = await _productService.UpdateProductAsync(id, request);
 

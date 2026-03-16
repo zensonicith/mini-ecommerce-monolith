@@ -15,15 +15,14 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="NSwag.AspNetCore" Version="14.6.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.Application\MyApp.Application.csproj" />
     <ProjectReference Include="..\MyApp.Infrastructure\MyApp.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>
