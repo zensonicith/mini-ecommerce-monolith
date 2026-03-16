@@ -2,15 +2,27 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyApp.API.Exception.Handler;
 using MyApp.Infrastructure.Persistence;
 using MyApp.Infrastructure.Persistence.Seed;
 using MyApp.Infrastructure;
 using MyApp.Application;
 using MyApp.Infrastructure.Options;
 using MyApp.Infrastructure.Settings;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// === Config Serilog ===
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateBootstrapLogger();
+
+builder.Host.UseSerilog();
+
+// === Config Exception Handler ===
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // === Config database connection ===
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -77,11 +89,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi();
 }
 
-app.UseCors("CorsPolicy");
+app.UseExceptionHandler();
+
+// === Logging each request + enrich description into log ===
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set("UserId",
+            httpContext.User.FindFirst("id")?.Value);
+        diagnosticContext.Set("ClientIP",
+            httpContext.Connection.RemoteIpAddress?.ToString());
+        diagnosticContext.Set("UserAgent",
+            httpContext.Request.Headers.UserAgent.ToString());
+        diagnosticContext.Set("RequestPath",
+            httpContext.Request.Path);
+    };
+});
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseRouting();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 
