@@ -13,6 +13,14 @@ public class CustomerRepository : ICustomerRepository
     {
         _dbContext = dbContext;
     }
+    public async Task<Customer?> GetByIdAsync(int id)
+    {
+        var customer = await _dbContext.Customers
+            .Include(c => c.Role)
+            .SingleOrDefaultAsync(c => c.Id == id);
+        return customer;
+    }
+
     public async Task<Customer> GetByUserNameAsync(string userName)
     {
         var user = await _dbContext.Customers
