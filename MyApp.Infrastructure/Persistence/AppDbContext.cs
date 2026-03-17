@@ -10,6 +10,7 @@ namespace MyApp.Infrastructure.Persistence
         public DbSet<Product> Products { get; set; }
         public DbSet<OrderProducts> OrderProducts { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

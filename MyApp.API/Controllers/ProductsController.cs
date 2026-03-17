@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyApp.Application.DTOs;
 using MyApp.Application.Interfaces;
@@ -6,7 +7,7 @@ namespace MyApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
