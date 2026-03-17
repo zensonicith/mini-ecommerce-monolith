@@ -7,7 +7,7 @@ using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace MyApp.Application
 {
-    public static class ApplicationDI
+    public static class ApplicationDi
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {

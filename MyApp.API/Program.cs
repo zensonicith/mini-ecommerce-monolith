@@ -1,14 +1,17 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyApp.API.Exception.Handler;
+using MyApp.API.Filters;
 using MyApp.Infrastructure.Persistence;
 using MyApp.Infrastructure.Persistence.Seed;
 using MyApp.Infrastructure;
 using MyApp.Application;
 using MyApp.Infrastructure.Options;
 using MyApp.Infrastructure.Settings;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +25,20 @@ builder.Host.UseSerilog();
 
 // === Config Exception Handler ===
 builder.Services.AddProblemDetails();
+// Register specific handlers first; the first match wins.
+builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+builder.Services.AddExceptionHandler<ConflictExceptionHandler>();
+builder.Services.AddExceptionHandler<UnauthorizedExceptionHandler>();
+builder.Services.AddExceptionHandler<ForbiddenExceptionHandler>();
+builder.Services.AddExceptionHandler<IntegrationExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+// We want a consistent ProblemDetails error shape for validation failures too (instead of the default ApiController 400).
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 // === Config database connection ===
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -46,7 +62,12 @@ builder.Services.AddCors(options =>
 // === Register services ===
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    // Convert invalid ModelState into an exception so it flows through the same exception handlers.
+    options.Filters.Add<ModelStateValidationFilter>();
+});
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddOpenApi();
 builder.Services.AddOpenApiDocument();
 
@@ -89,8 +110,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi();
 }
 
-app.UseExceptionHandler();
-
 // === Logging each request + enrich description into log ===
 app.UseSerilogRequestLogging(options =>
 {
@@ -106,6 +125,8 @@ app.UseSerilogRequestLogging(options =>
             httpContext.Request.Path);
     };
 });
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
