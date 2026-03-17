@@ -9,9 +9,9 @@ namespace MyApp.Application.Interfaces
         Task<List<ProductResponseDto>> GetAllProductsAsync();
         Task<ProductResponseDto> GetProductByIdAsync(int id);
 
-        Task<ProductResponseDto> AddProductAsync(CreateProductRequestDto request, CancellationToken ct = default);
+        Task<ProductResponseDto> AddProductAsync(ProductRequestDto request, CancellationToken ct = default);
 
-        Task<bool> UpdateProductAsync(int id, UpdateProductRequestDto request, CancellationToken ct = default);
+        Task<bool> UpdateProductAsync(int id, ProductRequestDto request, CancellationToken ct = default);
 
         Task<bool> DeleteProductAsync(int id);
     }

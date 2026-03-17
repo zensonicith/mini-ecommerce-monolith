@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace MyApp.Application.DTOs
 {
-    public class CreateProductRequestDto
+    public class ProductRequestDto
     {
         public string ProductName { get; set; }
         public string? Description { get; set; }
