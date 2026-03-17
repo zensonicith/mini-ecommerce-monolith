@@ -20,4 +20,17 @@ public class CustomerRepository : ICustomerRepository
             .SingleOrDefaultAsync(customer => customer.UserName.Equals(userName));
         return user;
     }
+
+    public async Task<bool> ExistsByUserNameAsync(string userName)
+    {
+        var isExisted = await _dbContext.Customers.AnyAsync(customer => customer.UserName.Equals(userName));
+        return isExisted;
+    }
+
+    public async Task<Customer> AddAsync(Customer customer)
+    { 
+        await _dbContext.Customers.AddAsync(customer);
+        await _dbContext.SaveChangesAsync();
+        return customer;
+    }
 }
