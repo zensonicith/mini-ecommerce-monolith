@@ -1,4 +1,5 @@
-﻿using MyApp.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 using MyApp.Infrastructure.Persistence;
 using System;
@@ -20,19 +21,23 @@ namespace MyApp.Infrastructure.Repositories
             return _context.Orders;
         }
 
-        public Task<Order?> GetByIdAsync(int id)
+        public async Task<Order?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Orders
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Task AddAsync(Order order)
+        public async Task AddAsync(Order order)
         {
-            throw new NotImplementedException();
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(Order order)
+        public async Task UpdateAsync(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Order order)
