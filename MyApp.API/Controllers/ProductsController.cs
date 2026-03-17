@@ -39,14 +39,14 @@ namespace MyApp.API.Controllers
 
         [HttpPost]
         //[Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequestDto request)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
             var result = await _productService.AddProductAsync(request);
             return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, result);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] UpdateProductRequestDto request)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductRequestDto request)
         {
             var success = await _productService.UpdateProductAsync(id, request);
 

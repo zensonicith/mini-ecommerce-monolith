@@ -30,7 +30,7 @@ namespace MyApp.Application.Services
             return response;
         }
 
-        public async Task<ProductResponseDto> AddProductAsync(CreateProductRequestDto request,
+        public async Task<ProductResponseDto> AddProductAsync(ProductRequestDto request,
             CancellationToken ct = default)
         {
             var product = new Product
@@ -48,7 +48,7 @@ namespace MyApp.Application.Services
             return response;
         }
 
-        public async Task<bool> UpdateProductAsync(int id, UpdateProductRequestDto request,
+        public async Task<bool> UpdateProductAsync(int id, ProductRequestDto request,
             CancellationToken ct = default)
         {
             var product = await _productRepository.GetByIdAsync(id);
@@ -60,14 +60,14 @@ namespace MyApp.Application.Services
             product.Unit = request.Unit;
             product.Price = request.Price;
 
-            if (request.NewImageUrl != null)
+            if (request.ImageUrl != null)
             {
                 if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
                     await _fileStorage.DeleteImageAsync(product.ImageUrl, ct);
                 }
 
-                product.ImageUrl = request.NewImageUrl;
+                product.ImageUrl = request.ImageUrl;
             }
 
             await _productRepository.UpdateAsync(product);
