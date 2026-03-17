@@ -22,4 +22,25 @@ public class CustomerService : ICustomerService
         
         return (CustomerDto)customer;
     }
+
+    public async Task<CustomerDto?> CreateAsync(CreateCustomerRequest createCustomerRequest)
+    {
+        if (await _customerRepository.ExistsByUserNameAsync(createCustomerRequest.UserName))
+        {
+            throw new ConflictException("Username is already used");
+        }
+
+        Customer customer = new Customer
+        {
+            Address = createCustomerRequest.Address,
+            City = createCustomerRequest.City,
+            Name = createCustomerRequest.Name,
+            UserName = createCustomerRequest.UserName,
+            Password = createCustomerRequest.Password,
+            RoleId = 2
+        };
+        await _customerRepository.AddAsync(customer);
+        var customerDto = (CustomerDto)customer;
+        return customerDto;
+    }
 }

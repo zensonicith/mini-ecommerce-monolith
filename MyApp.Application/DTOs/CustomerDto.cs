@@ -1,4 +1,5 @@
-﻿using MyApp.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+using MyApp.Domain.Entities;
 using MyApp.Domain.Enum;
 
 namespace MyApp.Application.DTOs;
@@ -10,7 +11,8 @@ public class CustomerDto
     public string? Address { get; set; }
     public string UserName { get; set; }
     public string? City { get; set; }
-    public ERole Role { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ERole? Role { get; set; }
     
     public static explicit operator CustomerDto(Customer customer)
     {
@@ -23,7 +25,7 @@ public class CustomerDto
             City = customer.City,
             Name = customer.Name,
             Id = customer.Id,
-            Role = customer.Role.RoleType
+            Role = customer.Role?.RoleType
         };
     }
 }

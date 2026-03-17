@@ -4,5 +4,8 @@ namespace MyApp.Application.Interfaces;
 
 public interface ICustomerRepository
 {
+    Task<Customer?> GetByIdAsync(int id);
     Task<Customer> GetByUserNameAsync(string userName);
+    Task<bool> ExistsByUserNameAsync(string userName);
+    Task<Customer> AddAsync(Customer customer);
 }
