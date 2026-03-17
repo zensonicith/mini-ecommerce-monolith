@@ -13,10 +13,6 @@ public class UploadImageController(IFileStorageService storageService) : Control
         CancellationToken ct = default)
     {
         var result = await storageService.UploadImageAsync(requestDto, "product", ct);
-        if (result == null)
-        {
-            return BadRequest("Upload failed!");
-        }
         return Ok(result);
     }
 }

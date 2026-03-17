@@ -16,6 +16,10 @@ public class CustomerService : ICustomerService
     public async Task<CustomerDto?> GetByUserNameAsync(string userName)
     {
         var customer = await _customerRepository.GetByUserNameAsync(userName);
+
+        if (customer == null)
+            throw new NotFoundException(nameof(customer), customer.UserName);
+        
         return (CustomerDto)customer;
     }
 

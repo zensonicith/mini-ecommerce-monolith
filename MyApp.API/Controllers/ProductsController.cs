@@ -24,47 +24,32 @@ namespace MyApp.API.Controllers
             return Ok(allProduct);
         }
 
-
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById([FromRoute] int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-
-            if (product == null)
-            {
-                return NotFound($"Product {id} is not found!");
-            }
-
             return Ok(product);
         }
 
         [HttpPost]
-        //[Authorize(Roles = "ADMIN")]
+        // [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDto request)
         {
             var result = await _productService.AddProductAsync(request);
-            return CreatedAtAction(nameof(GetProductById), new { id = result.Id}, result);
+            return CreatedAtAction(nameof(GetProductById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductRequestDto request)
         {
-            var success = await _productService.UpdateProductAsync(id, request);
-
-            if (!success)
-                return BadRequest();
-
+            await _productService.UpdateProductAsync(id, request);
             return NoContent();
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
-            var success = await _productService.DeleteProductAsync(id);
-
-            if (!success)
-                return NotFound();
-
+            await _productService.DeleteProductAsync(id);
             return NoContent();
         }
     }
