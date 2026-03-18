@@ -20,5 +20,12 @@ namespace MyApp.API.Controllers
             var order = _orderService.GetAllOrders();
             return Ok(order);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetOrderById([FromRoute] int id)
+        {
+            var order = await _orderService.GetOrderByIdAsync(id);
+            return Ok(order);
+        }
     }
 }
