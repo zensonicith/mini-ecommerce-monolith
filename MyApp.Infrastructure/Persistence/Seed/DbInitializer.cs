@@ -14,9 +14,7 @@ namespace MyApp.Infrastructure.Persistence.Seed
             {
                 new CustomerSeeder(),
                 new CustomerSeeder(),
-                new ProductSeeder(),
-                new OrderSeeder(),
-                new OrderProductsSeeder()
+                new ProductSeeder()
             };
 
             foreach (var seeder in seeders)

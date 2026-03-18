@@ -8,7 +8,7 @@ namespace MyApp.Infrastructure.Persistence
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<OrderProducts> OrderProducts { get; set; }
+        public DbSet<OrderDetails> OrderProducts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Cart> Carts { get; set; }
 

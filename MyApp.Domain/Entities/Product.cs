@@ -8,6 +8,6 @@
         public int Unit { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
-        public ICollection<OrderProducts> OrderProducts { get; } = [];
+        public ICollection<OrderDetails> OrderProducts { get; } = [];
     }
 }
