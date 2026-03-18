@@ -13,6 +13,7 @@ using MyApp.Infrastructure.Options;
 using MyApp.Infrastructure.Settings;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Serilog;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +94,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // === Blob storage Configuration ===
 builder.Services.Configure<BlobStorageOptions>(
     builder.Configuration.GetSection("AzureBlobStorage"));
+
+// === Stripe payment ===
+var stripeSecret = builder.Configuration["Stripe:SecretKey"];
+StripeConfiguration.ApiKey = stripeSecret;
 
 var app = builder.Build();
 

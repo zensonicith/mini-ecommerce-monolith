@@ -2,10 +2,7 @@
 using MyApp.Application.Interfaces;
 using MyApp.Domain.Entities;
 using MyApp.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+using Microsoft.EntityFrameworkCore;
 namespace MyApp.Infrastructure.Repositories
 {
     internal class OrderRepository : IOrderRepository
@@ -24,8 +21,9 @@ namespace MyApp.Infrastructure.Repositories
         public async Task<Order?> GetByIdAsync(int id)
         {
             return await _context.Orders
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(x => x.OrderProducts)
+                .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task AddAsync(Order order)
@@ -33,9 +31,10 @@ namespace MyApp.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Order order)
+        public async Task UpdateAsync(Order order)
         {
-            throw new NotImplementedException();
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Order order)

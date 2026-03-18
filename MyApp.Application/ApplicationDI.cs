@@ -14,7 +14,8 @@ namespace MyApp.Application
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
-
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.AddFluentValidationAutoValidation();

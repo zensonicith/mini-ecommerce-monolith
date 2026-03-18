@@ -10,5 +10,8 @@ namespace MyApp.Application.Interfaces
     {
         IQueryable<Order> GetAllOrders();
         Task<OrderResponseDto> GetOrderByIdAsync(int id);
+        Task<OrderResponseDto> UpdateOrderAsync( int orderId, UpdateOrderRequestDto request);
+        Task<Order> GetDomainOrderByIdAsync(int orderId);
+        Task UpdateDomainOrderAsync(Order order);
     }
 }
