@@ -25,7 +25,7 @@ public class OrderResponseDto
     public string ShippingPostalCode { get; set; }
 
     public List<OrderItemResponseDto> Items { get; set; }
-    
+
     public static explicit operator OrderResponseDto(Order order)
     {
         return new OrderResponseDto
